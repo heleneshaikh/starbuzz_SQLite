@@ -7,10 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +20,7 @@ public class DrinkActivity extends Activity {
     protected static final String ID = "id";
     SQLiteDatabase db;
     Cursor cursor;
-
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,15 +69,40 @@ public class DrinkActivity extends Activity {
 
     public void onFavouriteClicked(View view) {
         Intent intent = getIntent();
-        int id = (int) intent.getExtras().get(ID);
+        id = (int) intent.getExtras().get(ID);
+        new updateFavouriteDrinks().execute(id);
+    }
 
-        CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox_fav);
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("FAVOURITE", checkBox.isChecked());
+    private class updateFavouriteDrinks extends AsyncTask<Integer, Void, Boolean> {
+        ContentValues contentValues;
 
-        SQLiteOpenHelper dbHelper = new DBHelper(this);
-        db = dbHelper.getWritableDatabase();
-        db.update("drink", contentValues, "_id = ?", new String[]{Integer.toString(id)});
-        db.close();
+        @Override
+        protected void onPreExecute() {
+            CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox_fav);
+            contentValues = new ContentValues();
+            contentValues.put("FAVOURITE", checkBox.isChecked());
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer ... drinks) {
+           int id = drinks[0]; //there's only 1 result
+            SQLiteOpenHelper dbHelper = new DBHelper(DrinkActivity.this);
+            try {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                db.update("drink", contentValues, "_id = ?", new String[]{Integer.toString(id)});
+                db.close();
+                return true;
+            } catch (SQLiteException e) {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (!success) {
+                Toast toast = Toast.makeText(DrinkActivity.this, "Database unavailable", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
     }
 }

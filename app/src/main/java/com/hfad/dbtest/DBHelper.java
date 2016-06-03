@@ -6,9 +6,7 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by heleneshaikh on 02/06/16.
- */
+
 public class DBHelper extends SQLiteOpenHelper {
     private final static String DB_NAME = "starbuzz";
     private final static int DB_VERSION = 2;
