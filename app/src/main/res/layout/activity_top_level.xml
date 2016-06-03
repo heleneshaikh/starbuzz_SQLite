@@ -10,7 +10,7 @@
         android:layout_marginTop="@dimen/iv_mt"
         android:layout_marginBottom="@dimen/iv_mb"
         android:layout_width="300dp"
-        android:layout_height="150dp"
+        android:layout_height="80dp"
         android:src="@drawable/starbuzz_logo"/>
 
     <ListView
@@ -18,4 +18,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:entries="@array/nav"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_favDrinks"
+        android:textSize="20sp"
+        android:layout_marginStart="15dp"/>
+
+    <ListView
+        android:id="@+id/lv_favourites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
